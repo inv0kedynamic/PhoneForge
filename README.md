@@ -4,7 +4,7 @@
 功能与脚本一一对应：抓号段页 → 按号码模式过滤 → 交叉生成 → 导出 `txt.txt` / `vcf.vcf`。
 
 - Android 包名：`dev.yuxing.software`
-- 网页部署：Cloudflare Pages（静态根 `web-static/` + `functions/` 抓取代理）
+- 网页部署：Cloudflare Workers（Worker + `web-static/` 静态资产）
 - 仓库：<https://github.com/inv0kedynamic/PhoneForge>
 - 安装包：<https://github.com/inv0kedynamic/PhoneForge/releases/tag/v1.0>
 
@@ -24,8 +24,7 @@ PhoneForge/
 │  ├─ js/app.js             UI 渲染 + 事件
 │  ├─ js/main.js            入口
 │  └─ server/serve.mjs      本地服务（静态 + 号段代理）
-├─ functions/               Cloudflare Pages Functions
-│  └─ api/telphone/[[...path]].js     /api/telphone/* → telphone.cn
+├─ src/index.js             Cloudflare Worker 入口：/api/telphone/* 代理
 ├─ web/                     React 18 + Vite + TS 版（可选，需 npm install）
 ├─ android/                 Android 版
 │  └─ app/src/main/java/dev/yuxing/software/
@@ -36,7 +35,7 @@ PhoneForge/
 │     ├─ ui/ForgeScreen.kt  Compose Material3 页面
 │     └─ ui/theme/Theme.kt  紫色 lightColorScheme / darkColorScheme
 ├─ docs/                    截图与样例产物
-├─ wrangler.toml            Cloudflare Pages 配置
+├─ wrangler.toml            Cloudflare Workers 配置（Worker + 静态资产）
 └─ dist/                    已构建的 APK 与单文件网页
 ```
 
@@ -68,27 +67,27 @@ node server/proxy.mjs        # http://127.0.0.1:5185
 npm run build:single         # 单文件版 → dist-single/index.html
 ```
 
-## 部署到 Cloudflare Pages
+## 部署到 Cloudflare Workers
 
-**方式一：命令行**
+仓库是 **Worker + 静态资产** 模型，对应 Workers Builds 默认的 `npx wrangler deploy`。
 
-```bash
-npx wrangler login
-npx wrangler pages deploy web-static --project-name=phoneforge
-```
+| 路径 | 处理 |
+|---|---|
+| `/api/telphone/*` | `src/index.js` 代理到 `http://telphone.cn/*`（gzip + 80 明文） |
+| 其余 | `env.ASSETS` → `web-static/` 静态文件 |
 
-`functions/` 会被自动识别：`/api/telphone/*` 转发到 `http://telphone.cn/*`（带 gzip 头）。
-
-**方式二：Dashboard 连 Git**
+Dashboard 只需三项：
 
 | 配置项 | 值 |
 |---|---|
-| Build command | （留空） |
-| Build output directory | `web-static` |
+| Build command | 留空 |
+| Deploy command | `npx wrangler deploy`（默认） |
 | Root directory | 仓库根 |
-| Functions 目录 | 自动读取仓库根 `functions/` |
 
-部署后形如 `https://phoneforge.pages.dev`。
+本地验证：`npx wrangler dev` → http://localhost:8787
+
+完整说明（含之前 `Missing entry-point` 失败的原因）见
+[`docs/deploy-cloudflare.md`](docs/deploy-cloudflare.md)。
 
 ## Android
 
