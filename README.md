@@ -5,6 +5,10 @@
 
 - Android 包名：`dev.yuxing.software`
 - 网页部署：Cloudflare Pages（静态根 `web-static/` + `functions/` 抓取代理）
+- 仓库：<https://github.com/inv0kedynamic/PhoneForge>
+- 安装包：<https://github.com/inv0kedynamic/PhoneForge/releases/tag/v1.0>
+
+部署步骤见 [`docs/deploy-cloudflare.md`](docs/deploy-cloudflare.md)。
 
 ## 目录
 

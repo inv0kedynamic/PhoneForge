@@ -89,3 +89,16 @@ npx wrangler pages deploy
 - 抓取依赖 `telphone.cn` 可达；该站点只认 80 明文、强制 gzip，Functions 已按此实现
 - CF Pages Functions 单次请求免费额度充裕，但不要做高频批量抓取
 - 站点是纯静态前端 + 一个代理函数，不存任何数据
+
+## 关于 _middleware.js（重要）
+
+Functions 用的是 `functions/api/telphone/_middleware.js`，**不是** `[[...path]].js`。
+
+原因：方括号文件名在 Windows 下的 wrangler 会直接构建失败
+（`Failed to build Functions at ./functions`），而且日志不给出具体原因；
+`[path].js` 只能匹配一层路径；`index.js` 只匹配 `/api/telphone/` 本身。
+`_middleware.js` 是唯一能捕获 `/api/telphone/*` 全部层级的写法。
+
+本地已验证：`npx wrangler pages dev web-static` 后访问
+`/api/telphone/prefix/北京133/` 返回 103,981 字节、405 个号段，
+与 `web-static/server/serve.mjs` 的结果完全一致。
