@@ -37,3 +37,8 @@ desktop.ini
 # ---- 已构建的交付物不入库（用 GitHub Releases 分发）----
 dist/
 
+
+# ---- wrangler 本地缓存 ----
+.wrangler/
+.dev.vars
+

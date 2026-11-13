@@ -1,0 +1,31 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web-static/**'
+      - 'functions/**'
+      - 'wrangler.toml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 需要一个 Cloudflare API Token（权限：Cloudflare Pages:Edit）
+      # 以及 Account ID，两者都放在仓库 Secrets：
+      #   CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy web-static --project-name=phoneforge --branch=main
