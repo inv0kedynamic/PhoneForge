@@ -1,0 +1,39 @@
+# ---- 依赖 ----
+node_modules/
+.pnpm-store/
+
+# ---- 构建产物 ----
+web/dist/
+web/dist-single/
+android/build/
+android/app/build/
+android/.gradle/
+*.apk
+*.aab
+*.class
+*.jar
+!android/gradle/wrapper/gradle-wrapper.jar
+
+# ---- 本地环境 ----
+android/local.properties
+android/app/keystore/
+*.jks
+*.keystore
+.env
+.env.local
+
+# ---- 编辑器 / 系统 ----
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- 抓包 / 调试残留 ----
+.playwright-mcp/
+*.log
+
+# ---- 已构建的交付物不入库（用 GitHub Releases 分发）----
+dist/
+

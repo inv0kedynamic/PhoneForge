@@ -1,0 +1,14 @@
+# Cloudflare Pages 配置
+# 静态根目录 = web-static（零依赖，无需构建）
+# Functions 目录固定在仓库根：functions/
+#
+# 部署：
+#   npx wrangler pages deploy web-static --project-name=phoneforge
+# 或在 CF Dashboard 连接 Git 仓库，Build output directory 填 web-static，
+# Build command 留空。
+
+name = "phoneforge"
+pages_build_output_dir = "web-static"
+compatibility_date = "2025-01-01"
+
+# 本地 dev 用：npx wrangler pages dev web-static
